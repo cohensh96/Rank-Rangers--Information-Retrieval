@@ -943,7 +943,7 @@
                 </div>
 
                 
-        
+         
                 <!-- Implementation Section -->
                 <div class="card step-card mt-5 hebrew-text">
                     <h4 class="mb-4"><i class="fas fa-code me-2"></i>יישום בקוד</h4>
@@ -1009,17 +1009,21 @@
                             <div class="timeline-item">
                                 <div class="timeline-number">2</div>
                                 <h4>סריקת דפים</h4>
-                                <div class="sub-item">שליחת בקשת HTTP לכל URL</div>
-                                <div class="sub-item">עיבוד HTML באמצעות BeautifulSoup</div>
+                                <div class="sub-item">שליחת בקשת HTTP לכל URL וטעינת תוכן הדף לתוך אובייקט BeautifulSoup</div>
+                                <div class="sub-item">חילוץ טקסט גולמי: כל הטקסט בעמוד לא כולל תגיות HTML חולץ, כדי לזהות את המילים החשובות ולנתח אותן</div>
+                                <div class="sub-item">חילוץ קישורים כדי לזהות לאילו המודים הדף מקשר</div>
+                                <div class="sub-item">חילוץ כותרות שהן לרוב רלוונטיות לנושא הדף </div>
                             </div>
+
         
                             <!-- Step 3 -->
                             <div class="timeline-item">
                                 <div class="timeline-number">3</div>
                                 <h4>ניתוח תוכן הדף</h4>
-                                <div class="sub-item">חילוץ וניקוי מילים (Stop Words)</div>
+                                <div class="sub-item">הפיכת כל המילים לאותיות קטנות</div>
+                                <div class="sub-item">חילוץ וניקוי מילים - Stop Words</div>
                                 <div class="sub-item">Stemming באמצעות PorterStemmer</div>
-                                <div class="sub-item">עדכון Inverted Index</div>
+                                <div class="sub-item">עדכון Inverted Index - המילים שנמצאו הוספו למבנה זה שמקשר בין כל מילה לדפים בהם היא מופיעה</div>
                             </div>
         
                             <!-- Step 4 -->
@@ -1029,6 +1033,8 @@
                                 <p>חישוב ציון TF-IDF המבוסס על:</p>
                                 <div class="sub-item">תדירות הופעת המילים (TF)</div>
                                 <div class="sub-item">משקל הפוך להופעה במסמכים (IDF)</div>
+                                <div class="sub-item">עבור כל מילה בשאילתא שנמצאת בכותרות ניתן ציון מוגבר</div>
+                                <div class="sub-item">מבצעים סכימה של כל ערכי הTF-IDF של מילות השאילתא והמסמך כדי לקבל את הציון הססופי של הדף</div>
                             </div>
         
                             <!-- Step 5 -->
@@ -1042,7 +1048,7 @@
                             <div class="timeline-item">
                                 <div class="timeline-number">6</div>
                                 <h4>מיון ושמירת התוצאות</h4>
-                                <p>מיון לפי ציון רלוונטיות ובחירת 20 הדפים המובילים</p>
+                                <p>מיון לפי ציון רלוונטיות ובחירת 20 הדפים המובילים מתוך 50 הדפים שנסרקו</p>
                             </div>
         
                             <!-- Final Result -->
