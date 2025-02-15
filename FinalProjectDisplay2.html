@@ -1,0 +1,2152 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+      .hebrew-text {
+          direction: rtl;
+          text-align: right;
+          font-family: 'Open Sans Hebrew', Arial, sans-serif;
+      }
+      .english-text {
+          direction: ltr;
+          text-align: left;
+      }
+      .bilingual-section {
+          display: flex;
+          justify-content: space-between;
+      }
+      .bilingual-section > div {
+          width: 48%;
+      }
+      [dir="rtl"] .card-header {
+          text-align: right;
+      }
+      .language-toggle {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 1000;
+      }
+
+      .linked-list-item {
+            position: relative;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        .linked-list-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .linked-list-item::after {
+            content: "↓";
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            color: #0d6efd;
+            font-size: 1.5rem;
+        }
+        .link-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #198754;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .url-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            background: #e7f1ff;
+            border-radius: 4px;
+            color: #0d6efd;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            word-break: break-all;
+        }
+        .url-link:hover {
+            background: #0d6efd;
+            color: white;
+            transform: translateX(5px);
+        }
+        .base-url {
+            font-weight: 500;
+            padding: 0.5rem;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.3s;
+        }
+        .url-cell {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .url-cell a {
+            text-decoration: none;
+            color: #0d6efd;
+        }
+        .url-cell a:hover {
+            text-decoration: underline;
+        }
+        .pagerank-value {
+            font-family: monospace;
+            font-weight: 500;
+        }
+        .page-id {
+            font-weight: bold;
+            background-color: #e7f1ff;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        .value-badge {
+            background: linear-gradient(45deg, #0d6efd, #4ECDC4);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .url-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #4ECDC4;
+        }
+        .section-title {
+            color: #2c3e50;
+            border-right: 4px solid #3498db;
+            padding-right: 15px;
+        }
+        .bullet-point {
+            color: #3498db;
+            margin-left: 10px;
+        }
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+        }
+        .formula-container {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .process-card {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        .process-card:hover {
+            transform: translateY(-5px);
+        }
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        .benefit-item {
+            border-right: 4px solid #6366f1;
+            background: rgba(99, 102, 241, 0.05);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .step-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+        .step-number {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .formula-container {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .step-title {
+            color: #4a5568;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding-right: 50px;
+        }
+        .implementation-box {
+            background: #2d3748;
+            color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 2rem;
+        }
+        .implementation-step {
+            padding: 10px;
+            border-right: 3px solid #667eea;
+            margin: 10px 0;
+        }
+
+        .process-timeline {
+            position: relative;
+        }
+        .timeline-item {
+            position: relative;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        .timeline-item:hover {
+            transform: translateY(-5px);
+        }
+        .timeline-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+        .timeline-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+        }
+        .sub-item {
+            background: rgba(99, 102, 241, 0.05);
+            border-right: 4px solid #6366f1;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+        }
+
+        .query-card {
+            border: none;
+            border-radius: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        .query-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .query-header {
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .query-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            color: #2193b0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .query-body {
+            padding: 2rem;
+            background: white;
+        }
+        .query-text {
+            font-size: 1.2rem;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        .query-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 2rem;
+            transform: rotate(10deg);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover .service-icon {
+            transform: rotate(0deg);
+        }
+        .info-section {
+            background: linear-gradient(135deg, #f6f9fc, #edf2f7);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .website-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+        .service-item {
+            padding: 1rem;
+            border-right: 4px solid #667eea;
+            background: white;
+            margin: 1rem 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .query-section {
+            margin-bottom: 3rem;
+        }
+        .query-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .query-header {
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+        .query-content {
+            padding: 2rem;
+        }
+        .info-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .info-item:hover {
+            transform: translateX(-5px);
+        }
+        .info-icon {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .query-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --background-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            font-family: 'Arial Hebrew', Arial, sans-serif;
+        }
+        
+        .hebrew-text {
+            text-align: right;
+        }
+        
+        .dashboard-card {
+            background: linear-gradient(145deg, #ffffff, #f5f7ff);
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            padding: 1.5rem;
+            border: none;
+        }
+        
+        .query-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .runtime-info {
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .runtime-badge {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .graph-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .title-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .total-time {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .token-pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            font-size: 0.9rem;
+        }
+        
+    </style>
+  </head>
+
+<body>
+
+  <section id="title" class="gradient-background">
+    <!-- Header -->
+    <header class=" py-3">
+        <div class="container">
+            <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="index.html">Home Page</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="ShirPage.html">Shir Cohen's Page</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="AlmogKPage.html">Almog Kadosh's Page </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="AmitPage.html">Amit Vinograd's Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="AlmogEPage.html">Almog Elbaz's Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="FinalProjectDisplay.html">Final Project <span class="sr-only">(current)</span></a>
+                    </li>
+                  </ul>
+               
+                </div>
+              </nav>
+        </div>
+    </header>
+
+    <!-- Title -->
+    <div class="container col-xxl-8 px-4">
+      <div class="row flex-lg-row-reverse align-items-center g-5 pt-5">
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold lh-1 mb-3">Rank Rangers Final Project</h1>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+          </div>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img src="./images/Students.png" class="d-block mx-lg-auto img-fluid" alt="Students" height="200" loading="lazy">
+        </div>
+      </div>
+    </div>
+ </section>
+
+ <div class="container my-5">
+  <div class="row">
+
+
+
+
+    <div class="col-12">
+        <!-- Section Query Display/ -->
+        <section id="technologies" class="mb-5 hebrew-text">
+
+            <div class="container py-5 hebrew-text">
+                <!-- Header Section -->
+                <div class="text-center mb-5">
+                    <div class="service-icon mx-auto">
+                        >><i class="fas fa-hospital-user"></i>
+                    </div>
+                    <h1 class="display-4 mb-3">משרד הבריאות הפדרלי בגרמניה</h1>
+                    <h3 class="text-muted">Bundesgesundheitsministerium</h3>
+                </div>
+        
+                <!-- Main Info Section -->
+                <div class="info-section mb-5">
+                    <p class="lead">
+                        האתר הרשמי של משרד הבריאות הפדרלי בגרמניה נועד לספק מידע נגיש ומדויק לציבור הרחב ולגורמים מקצועיים בתחום הבריאות.
+                    </p>
+                </div>
+        
+                <!-- Services Grid -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm">
+                            <div class="card-body">
+                                <div class="service-icon">
+                                    1<i class="fas fa-file-medical"></i>
+                                </div>
+                                <h4>מדיניות ורפורמות</h4>
+                                <div class="service-item">מדיניות בריאות</div>
+                                <div class="service-item">יוזמות ממשלתיות</div>
+                                <div class="service-item">רפורמות ופרסומים רשמיים</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm">
+                            <div class="card-body">
+                                <div class="service-icon">
+                                    2<i class="fas fa-heartbeat"></i>
+                                </div>
+                                <h4>ביטוח וזכויות</h4>
+                                <div class="service-item">תוכניות ביטוח בריאות</div>
+                                <div class="service-item">זכויות וחובות המטופלים</div>
+                                <div class="service-item">הדרכה לטיפולים רפואיים</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm">
+                            <div class="card-body">
+                                <div class="service-icon">
+                                    3<i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h4>מידע ועדכונים</h4>
+                                <div class="service-item">עדכוני חירום רפואיים</div>
+                                <div class="service-item">תוכניות חיסונים</div>
+                                <div class="service-item">סטטיסטיקות ונתונים</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Website URL -->
+                <div class="text-center">
+                    <a href="https://www.bundesgesundheitsministerium.de/en/" target="_blank" class="website-badge text-decoration-none">
+                        <i class="fas fa-globe me-2"></i>
+                        בקרו באתר
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-12">
+        <!-- Section Display Queries -->
+        <section id="technologies" class="mb-5 ">
+            <div class="container py-5 hebrew-text">
+                <h2 class="text-center mb-5">מידע חסר באתר משרד הבריאות הגרמני</h2>
+        
+                <!-- Query 1 -->
+                <div class="query-section">
+                    <div class="query-card">
+                        <div class="query-header" style="background: linear-gradient(135deg,  #4848d9, #8B5CF6);">
+                            <div class="query-number" style="color: #4848d9;">1</div>
+                            <h3>מדיניות בריאות למחלות כרוניות</h3>
+                            <p class="mb-0">"What are the available healthcare policies for chronic diseases in Germany?"</p>
+                        </div>
+                        <div class="query-content">
+                            <h4 class="mb-4">מידע נדרש:</h4>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1);">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    1<i class="fas fa-file-medical"></i>
+                                </div>
+                                <span>רשימה מקיפה של מדיניות ממשלתית למחלות כרוניות</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1)">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    2<i class="fas fa-procedures"></i>
+                                </div>
+                                <span>תוכניות ספציפיות למניעה, אבחון וטיפול</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1)">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    3<i class="fas fa-coins"></i>
+                                </div>
+                                <span>הקצאת תקציב ומימון לניהול מחלות כרוניות</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Query 2 -->
+                <div class="query-section">
+                    <div class="query-card">
+                        <div class="query-header" style="background: linear-gradient(135deg,  #4848d9, #8B5CF6);">
+                            <div class="query-number" style="color: #A78BFA;">2</div>
+                            <h3>זמני המתנה בבתי חולים לפי אזור</h3>
+                            <p class="mb-0">"What are the average waiting times in hospitals in Germany by region?"</p>
+                        </div>
+                        <div class="query-content">
+                            <h4 class="mb-4">מידע נדרש:</h4>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1);">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    1<i class="fas fa-map-marked-alt"></i>
+                                </div>
+                                <span>הגדרה ברורה של האזורים בגרמניה</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1)">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    2<i class="fas fa-hospital"></i>
+                                </div>
+                                <span>סיווג בתי חולים לפי אזורים וסוגים</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1)">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    3<i class="fas fa-clock"></i>
+                                </div>
+                                <span>זמני המתנה ממוצעים לכל שירות בכל בית חולים</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Query 3 -->
+                <div class="query-section">
+                    <div class="query-card">
+                        <div class="query-header" style="background: linear-gradient(135deg, #4848d9, #8B5CF6);">
+                            <div class="query-number" style="color: #A78BFA;">3</div>
+                            <h3>כיצד אוכל להחליף את כרטיס ביטוח הבריאות האירופי שאבד (EHIC)</h3>
+                            <p class="mb-0">"How can I replace my lost European Health Insurance Card (EHIC)?"</p>
+                        </div>
+                        <div class="query-content">
+                            <h4 class="mb-4">מידע נדרש:</h4>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1);">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    1<i class="fas fa-chart-bar"></i>
+                                </div>
+                                <span>שלבים לבקשת EHIC חלופי.</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1);">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    2<i class="fas fa-tasks"></i>
+                                </div>
+                                <span>פרטי התקשרות של ספק ביטוח הבריאות הרלוונטי.</span>
+                            </div>
+                            <div class="info-item" style="background: rgba(167, 139, 250, 0.1);">
+                                <div class="info-icon" style="background: #A78BFA;">
+                                    3<i class="fas fa-file-alt"></i>
+                                </div>
+                                <span>זמן משוער להחלפה והאם ניתנת תעודה זמנית.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+
+        </section>
+    </div>
+    
+    <div class="col-12">
+        <!-- Section TF-IDF Calc -->
+        <section id="technologies" class="mb-2 hebrew-text">
+        
+            <div class="container py-5">
+                <h2 class="text-center mb-5 hebrew-text">חישוב TF-IDF - מדד לחישוב חשיבותה של מילה ביחס לכל המסמכים בקורפוס</h2>
+                
+                <div class="row g-4">
+                    <!-- TF Card -->
+                    <div class="col-md-6">
+                        <div class="card step-card p-4 position-relative">
+                            <span class="step-number">1</span>
+                            <div class="card-body hebrew-text">
+                                <h4 class="step-title">חישוב TF (Term Frequency)</h4>
+                                <p>ה-TF מחושב כדי לייצג את תדירות המילה במסמך מסוים</p>
+                                <p class="text-muted">לכל מילה w בעמוד</p>
+                                <div class="formula-container">
+                                    <img src="./images/tf.png" alt="TF Formula" class="img-fluid" style="max-width: 300px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- DF Card -->
+                    <div class="col-md-6">
+                        <div class="card step-card p-4 position-relative">
+                            <span class="step-number">2</span>
+                            <div class="card-body hebrew-text">
+                                <h4 class="step-title">חישוב DF (Document Frequency)</h4>
+                                <p>המספר הכולל של העמודים המכילים את המילה w</p>
+                                <div class="formula-container">
+                                    <img src="./images/df.png" alt="DF Formula" class="img-fluid" style="max-width: 300px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- IDF Card -->
+                    <div class="col-md-6">
+                        <div class="card step-card p-4 position-relative">
+                            <span class="step-number">3</span>
+                            <div class="card-body hebrew-text">
+                                <h4 class="step-title">חישוב IDF (Inverse Document Frequency)</h4>
+                                <p>ה-IDF מחושב כדי לייצג עד כמה המילה נפוצה או ייחודית בקורפוס המסמכים כולו</p>
+                                <div class="formula-container">
+                                    <img src="./images/idf.png" alt="IDF Formula" class="img-fluid" style="max-width: 300px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- TF-IDF Card -->
+                    <div class="col-md-6">
+                        <div class="card step-card p-4 position-relative">
+                            <span class="step-number">4</span>
+                            <div class="card-body hebrew-text">
+                                <h4 class="step-title">חישוב TF-IDF</h4>
+                                <p>ה-TF-IDF משלב את שניהם לציון המייצג את חשיבות המילה הן ברמת המסמך הבודד והן ביחס לשאר המסמכים</p>
+                                <div class="formula-container">
+                                    <img src="./images/tfidf.png" alt="TF-IDF Formula" class="img-fluid" style="max-width: 300px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TF-IDF Normalization -->
+                    <div class="row-md-6">
+                        <div class="card step-card p-4 position-relative">
+                            <span class="step-number">5</span>
+                            <div class="card-body hebrew-text">
+                       <h5>נרמול ציוני ה-TF-IDF</h5>
+                       <p>נרמול של ציוני TF-IDF נועד לוודא שהשוואת מסמכים תהיה הוגנת ואינה תלויה בגורמים כמו אורך המסמך או סכום הערכים שלו. זה מאפשר למדוד רלוונטיות יחסית בין מסמכים ושאילתות.</p>
+                       
+                       <h6 class="mt-3"><strong>L2 Normalization</strong></h6>
+                       <p>תהליך הנרמול מתבצע בשני שלבים:</p>
+                       
+                       <div class="normalization-steps">
+                            <p>1. חישוב אורך הווקטור של המסמך:</p>
+                            <div class="formula-container">
+                                <img src="./images/norm1.png" alt="TF-IDF Formula" class="img-fluid" style="max-width: 300px;">
+                           </div>
+                            
+                            <p>2. נרמול כל רכיב בווקטור:</p>
+                            <div class="formula-container">
+                                 <img src="./images/norm2.png" alt="TF-IDF Formula" class="img-fluid" style="max-width: 300px;">
+                            </div>
+                       </div>
+                       
+                    </div>
+                </div>  
+                    </div>
+                 
+
+
+
+
+                </div>
+
+                <div class="container my-5">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-lg-10">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0 hebrew-text">חישוב TF-IDF</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="step-card p-3 bg-light">
+                                        <h5 class="hebrew-text">השאילתה היא:</h5>
+                                        <p class="bg-white rounded">
+                                            "?What are the available healthcare policies for chronic diseases in Germany"
+                                        </p>
+                                    </div>
+            
+                                    <div class="step-card p-3 bg-light">
+                                        <h5 class="hebrew-text">שלב ראשון: פירוק ל-token</h5>
+                                        <div class="bg-white p-3 rounded">
+                                            <div class="hebrew-text">
+                                                [<span class="token-pill">What</span>
+                                                <span class="token-pill">are</span>
+                                                <span class="token-pill">the</span>
+                                                <span class="token-pill">available</span>
+                                                <span class="token-pill">healthcare</span>
+                                                <span class="token-pill">policies</span>
+                                                <span class="token-pill">for</span>
+                                                <span class="token-pill">chronic</span>
+                                                <span class="token-pill">diseases</span>
+                                                <span class="token-pill">in</span>
+                                                <span class="token-pill">Germany</span>]
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="step-card p-3 bg-light">
+                                        <h5 class="hebrew-text">שלב שני: אחרי הורדת Stop words</h5>
+                                        <div class="bg-white p-3 rounded">
+                                            <div class="hebrew-text">
+                                                [<span class="token-pill">available</span>
+                                                <span class="token-pill">healthcare</span>
+                                                <span class="token-pill">policies</span>
+                                                <span class="token-pill">chronic</span>
+                                                <span class="token-pill">diseases</span>
+                                                <span class="token-pill">Germany</span>]
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="step-card p-3 bg-light">
+                                        <h5 class="hebrew-text">שלב שלישי: Stemming</h5>
+                                        <div class="bg-white p-3 rounded">
+                                            <div class="hebrew-text">
+                                                [<span class="token-pill">available</span>
+                                                <span class="token-pill">healthcare</span>
+                                                <span class="token-pill">policy</span>
+                                                <span class="token-pill">chronic</span>
+                                                <span class="token-pill">disease</span>
+                                                <span class="token-pill">Germany</span>]
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="step-card p-3 bg-light">
+                                        <h5 class="hebrew-text">שלב רביעי:</h5>
+                                        <p class="hebrew-text bg-white p-3 rounded">
+                                            ביצענו את חישובי ה-TF-IDF בקוד בדיוק כפי שהוצג למעלה.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+         
+                <!-- Implementation Section -->
+                <div class="card step-card mt-5 hebrew-text">
+                    <h4 class="mb-4"><i class="fas fa-code me-2"></i>יישום בקוד</h4>
+                    <p>הקוד מחשב TF−IDF על בסיס שאילתה נתונה:</p>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                        עובר על כל עמוד בקורפוס
+                    </div>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                        מחשב TF-IDF לכל מילה בשאילתה
+                    </div>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                       מנרמל את ערכי הTF-IDF 
+                    </div>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                        התוצאות נשמרות בקובץ אקסל
+                    </div>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                        <img src="./images/tf-idf-calc2.png" alt="TF-IDF Formula" class="img-fluid" style="max-width;">
+                    </div>
+                </div>
+
+                <!-- Example Section -->
+                <div class="card step-card mt-5 hebrew-text">
+                    <h4 class="mb-4"><i class="fas fa-code me-2"></i>דוגמא לחישוב עבור המילה germani ועבור מסמך ID7:</h4>
+                    <div class="implementation-step">
+                        <i class="fas fa-chevron-left me-2"></i>
+                        <img src="./images/example-tfidf.png" alt="TF-IDF Formula" class="img-fluid" style="max-width;">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+    <div class="col-12">
+        <!-- Section Crawling Process -->
+        <section id="technologies" class="mb-5 hebrew-text">
+            <div class="container py-5">
+                <div class="card shadow-sm mb-5">
+                    <div class="card-body hebrew-text">
+                        <h2 class="text-center mb-4">תהליך ה-Crawling ובחירת 20 העמודים</h2>
+                        <p class="lead text-center mb-5">
+                            מנגנון לסריקה ממוקדת של דפי אינטרנט, במטרה לאתר 20 דפים עבור השאילתה
+                        </p>
+                        
+                        <div class="process-timeline">
+                            <!-- Step 1 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">1</div>
+                                <h4>התחלת תהליך הסריקה</h4>
+                                <p>התהליך מתחיל עם URL ראשוני כנקודת התחלה, עם שתי רשימות:</p>
+                                <div class="sub-item">רשימת "לביקור" - עמודים שטרם נסרקו</div>
+                                <div class="sub-item">רשימת "מבוקרים" - עמודים שכבר נסרקו</div>
+                            </div>
+        
+                            <!-- Step 2 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">2</div>
+                                <h4>סריקת דפים</h4>
+                                <div class="sub-item">שליחת בקשת HTTP לכל URL וטעינת תוכן הדף לתוך אובייקט BeautifulSoup</div>
+                                <div class="sub-item">חילוץ טקסט גולמי: כל הטקסט בעמוד לא כולל תגיות HTML חולץ, כדי לזהות את המילים החשובות ולנתח אותן</div>
+                                <div class="sub-item">חילוץ קישורים כדי לזהות לאילו עמודים הדף מקשר</div>
+                                <div class="sub-item">חילוץ כותרות שהן לרוב רלוונטיות לנושא הדף </div>
+                            </div>
+
+        
+                            <!-- Step 3 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">3</div>
+                                <h4>ניתוח תוכן הדף</h4>
+                                <div class="sub-item">הפיכת כל המילים לאותיות קטנות</div>
+                                <div class="sub-item">חילוץ וניקוי מילים - Stop Words</div>
+                                <div class="sub-item">Stemming באמצעות PorterStemmer</div>
+                                <div class="sub-item">עדכון Inverted Index - המילים שנמצאו הוספו למבנה זה שמקשר בין כל מילה לדפים בהם היא מופיעה</div>
+                            </div>
+        
+                            <!-- Step 4 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">4</div>
+                                <h4>בחינת רלוונטיות</h4>
+                                <p>חישוב ציון TF-IDF המבוסס על:</p>
+                                <div class="sub-item">תדירות הופעת המילים (TF)</div>
+                                <div class="sub-item">משקל הפוך להופעה במסמכים (IDF)</div>
+                                <div class="sub-item">עבור כל מילה בשאילתא שנמצאת בכותרות ניתן ציון מוגבר</div>
+                                <div class="sub-item">מבצעים סכימה של כל ערכי הTF-IDF של מילות השאילתא והמסמך כדי לקבל את הציון הסופי של הדף</div>
+                            </div>
+        
+                            <!-- Step 5 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">5</div>
+                                <h4>חילוץ קישורים נוספים</h4>
+                                <p>הוספת קישורים חדשים לרשימת "לביקור" תוך סינון עמודים קיימים</p>
+                            </div>
+        
+                            <!-- Step 6 -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">6</div>
+                                <h4>מיון ושמירת התוצאות</h4>
+                                <p>מיון לפי ציון רלוונטיות ובחירת 20 הדפים המובילים מתוך 50 הדפים שנסרקו</p>
+                            </div>
+        
+                            <!-- Final Result -->
+                            <div class="timeline-item">
+                                <div class="timeline-number">7</div>
+                                <h4>תוצאה סופית</h4>
+                                <p>20 הדפים הנבחרים מציגים את השאילתה בצורה האופטימלית, בהתבסס על:</p>
+                                <div class="sub-item" style="border-right-color: white; background: rgba(255,255,255,0.1);">
+                                    מילות החיפוש והקשרן
+                                </div>
+                                <div class="sub-item" style="border-right-color: white; background: rgba(255,255,255,0.1);">
+                                    סריקת העמודים:
+                                </div>
+
+                                <div class="implementation-step">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    <img src="./images/CrawledPages2.png" alt="TF-IDF Formula" class="img-fluid" style="max-width: 700 px;">
+                                </div>
+								<div class="sub-item" style="border-right-color: white; background: rgba(255,255,255,0.1);">
+                                   בחירת ה50 דפים הרלוונטיים ביותר:
+                                </div>
+
+                                <div class="implementation-step">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    <img src="./images/best50.png" alt="TF-IDF Formula" class="img-fluid" style="max-width: 700 px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+      <div class="col-12">
+        <!-- Section A: Technologies -->
+        <section id="technologies" class="mb-2 hebrew-text">
+          <div class="card">
+            <div class="card-header bg-warning text-center text-white">
+                <h2 class="h4 mb-0">=== טכנולוגיות מעניינות ===</h2>
+            </div>
+              <div class="card-body">
+                  <div class="list-group">
+                      <div class="list-group-item">
+                          <h5 class="mb-1">1. BeautifulSoup</h5>
+                          <p>טכנולוגיה לעיבוד דפי HTML לצורך חיפוש קישורים וניתוח תכנים מתוך דפי אינטרנט, מאפשרת למצוא תגיות וקישורים בדפי אינטרנט.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">2. NLP עם nltk</h5>
+                          <p>משתמשים ב-nltk כדי לבצע עיבוד שפה טבעית, ובפרט שימוש ב-PorterStemmer לצורך חיתוך מילים (stemming) שמקטין מילים לשורש שלהן, דבר שיכול לסייע בשיפור ביצועים בתהליך חיפוש.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">3. Requests</h5>
+                          <p>שימוש בספריית requests לשליחה וקבלת בקשות HTTP, כדי לאסוף נתונים מדפי אינטרנט, כולל הבאת תוכן של דפי אינטרנט.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">4. ספריית Pandas</h5>
+                          <p>ליצירת DataFrames ולניהול נתונים בצורה מבנית, כך שניתן לשמור את התוצאות לקובץ Excel ולבצע ניתוחים וייצוא נתונים בצורה נוחה.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">5. Time Delay</h5>
+                          <p>הקוד של הזחלן משתמש ב- time.sleep() כדי להימנע מהעמסת יתר על אתרי אינטרנט במהלך הזחילה והשאילתות בכדי שלא נחסם.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">6. ספריית re - Regular Expression</h5>
+                          <p>זהו כלי עוצמתי לחיפוש ועיבוד טקסט מבוסס דפוסים, בעזרת re.findall(r'\w+', text) ביצענו חילוץ מדויק של מילים וניתוח תוכן עמודי האינטרנט בצורה גמישה.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">7. ספריית defaultdict</h5>
+                          <p>מאפשר עבודה נוחה עם מילונים בעזרת defaultdict(int) ביצענו אחסון וספירה של המילים השכיחות ביותר בכל מסמך.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">8. שימוש בספריית Math</h5>
+                          <p>לצרוך ביצוע חישובים שונים כמו חישובי הIDF לכל מילה כחלק מחישוב המדד TF-IDF. ספרייה זאת מאפשרת חישוב מדויק של משקל מילים במסמכים, על פי תדירות הופעתן.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">9. Excel Writer עם Openpyxl</h5>
+                          <p>מנוע כתיבה ועריכה של גיליונות Excel כחלק מספריית Pandas. ייצאנו את תוצאות הניתוח, מיפוי ה URL, ספירת המילים, חישובי הTF-IDF לפורמט Excel, מה שסיפק לנו תוצר ברור ומסודר להצגת התוצאות.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">10. IPython Display and Widgets</h5>
+                          <p>השתמשנו בווידגטים ליצירת ממשקי משוב אינטרקטיבים והצגת התוצאות במחברת Jupyter כחלק מהתהליך בקשת משוב רלוונטי/לא רלוונטי מהמשתמש לדפים שחזרו.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">11. NumPy</h5>
+                          <p>משמש לפעולות וקטוריות במערכת משוב הרלוונטיות וחישובי דמיון קוסינוס ועבור ווקטורי הTF-IDF.</p>
+                      </div>
+                      <div class="list-group-item">
+                          <h5 class="mb-1">12. Cosine Similarity</h5>
+                          <p>מיושם עבור חישובי דמיון מסמכים ב-relevance feedback, דירגנו את הדפים על סמך דמיון בינם לבין בחירות המשתמש.</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </section>
+      
+
+
+          <!-- Section B: Query Analysis -->
+          <section id="runtime-dependencies" class="mb-5 hebrew-text">
+           
+            <!-- Section B: Queries Runtimes -->
+            <div class="card">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <div class="card">
+                                    <div class="card-header bg-warning text-center text-white">
+                                        <h2 class="h4 mb-0">=== זמני ריצה של שאילתות ===</h2>
+                                    </div>
+                                    <div class="text-white mt-2 hebrew-text">זמן זחילה כולל: 37.92 שניות</div>
+                               
+                                <div class="card-body">
+                                    <!-- Query 1 -->
+                                    <div class="query-section">
+                                        <h3 class="hebrew-text">מדיניות בריאות למחלות כרוניות</h3>
+                                        <div class="graph-container">
+                                            <img src="./images/runtime2.png" alt="Query 1 Runtime Graph" class="img-fluid rounded">
+                                        </div>
+                                        <div class="runtime-info d-flex justify-content-between align-items-center">
+                                            <div class="hebrew-text">
+                                                <div>זמן שאילתה: <span class="runtime-badge text-white">0.17 שניות</span></div>
+                                                <div>זמן כולל: <span class="total-time">106.92 שניות</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Query 2 -->
+                                    <div class="query-section">
+                                        <h3 class="hebrew-text">זמני המתנה בבתי חולים</h3>
+                                        <div class="graph-container">
+                                            <img src="./images/runtime3.png" alt="Query 2 Runtime Graph" class="img-fluid rounded">
+                                        </div>
+                                        <div class="runtime-info d-flex justify-content-between align-items-center">
+                                            <div class="hebrew-text">
+                                                <div>זמן שאילתה: <span class="runtime-badge text-white">0.46 שניות</span></div>
+                                                <div>זמן כולל: <span class="total-time">128.95 שניות</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Query 3 -->
+                                    <div class="query-section">
+                                        <h3 class="hebrew-text">השוואת שביעות רצון מטופלים</h3>
+                                        <div class="graph-container">
+                                            <img src="./images/runtime4.png" alt="Query 3 Runtime Graph" class="img-fluid rounded">
+                                        </div>
+                                        <div class="runtime-info d-flex justify-content-between align-items-center">
+                                            <div class="hebrew-text">
+                                                <div>זמן שאילתה: <span class="runtime-badge text-white">0.41 שניות</span></div>
+                                                <div>זמן כולל: <span class="total-time">101.73 שניות</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+           
+            <!-- Section B: runtime and improvments -->
+            <div class="card">
+                <div class="card-header bg-warning text-center text-white">
+                    <h2 class="h4 mb-0">=== גורמים המשפיעים על זמני הריצה ===</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="h5">מבנה האתר:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            אתרים עם מבנה מורכב הכולל קישורים פנימיים רבים או דפים המקשרים זה לזה באופנים עמוקים יגרמו לזחלן לבצע יותר עבודה, מאחר שהוא צריך לאתר ולעבד מספר רב של קישורים.
+                        </li>
+                        <li class="list-group-item">
+                            העומק שאליו הזחלן נדרש להגיע גם משפיע. אם הוא צריך לסרוק דפים רבים במבנה עץ עמוק, הזחילה תיקח זמן רב יותר.
+                        </li>
+                        <li class="list-group-item">
+                            באתרים עשירים בקישורים תוכן רב, זמן עיבוד הטקסט והוספתו לאינדקס עולה משמעותית.
+                        </li>
+                    </ul>
+                    
+                    <h4 class="h5">מספר הדפים שנסרקים:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            מספר הדפים משפיע ישירות על זמן הריצה. בפרויקט הוגדרו 20 דפים כגבול, ולכן זמן הסריקה מוגבל למספר הזה. אם נעלה את המספר, זמני הריצה יגדלו פרופורציונלית.
+                        </li>
+                        <li class="list-group-item">
+                            ככל שמספר הדפים עולה, מספר הקישורים שצריך לעקוב אחריהם ותהליך האינדוקס (כמו ניתוח טקסט) מתארכים.
+                        </li>
+                    </ul>
+                    
+                    <h4 class="h5">עיבוד טקסט TF-IDF ו- Stemming:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            עיבוד טקסט מהווה חלק חשוב, אך הזמן הנדרש תלוי בגודל האינדקס ובכמות המילים בטקסטים.
+                        </li>
+                        <li class="list-group-item">
+                            סינון מילים לא רלוונטיות - Stop Words ויישום Stemming דורשים עיבוד חישובי, אך הוא מוגבל בהיקפו כי הוא פועל רק על הטקסט שנסרק.
+                        </li>
+                        <li class="list-group-item">
+                            למרות שהחישוב דורש זמן, זהו אחד השלבים המהירים יחסית, כיוון שהוא מתבצע על טקסט שכבר נמצא בזיכרון ולא דורש אינטראקציות נוספות עם השרת.
+                        </li>
+                    </ul>
+        
+                    <h4 class="h5">תשובת השרת ואיכות חיבור האינטרנט:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            זמן התגובה של השרתים באתר שסורקים משפיע ישירות על זמני הזחילה.
+                        </li>
+                        <li class="list-group-item">
+                            אם השרת איטי או אם יש בעיות בחיבור האינטרנט, ייתכן שיהיה צורך להמתין יותר זמן כדי לקבל תשובה מהשרת.
+                        </li>
+                    </ul>
+                    
+                    <h4 class="h5">PageRank:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            חישוב PageRank תלוי במספר הקישורים ובמבנה הקישורים. ככל שיש יותר קישורים, החישוב נהיה מורכב יותר.
+                        </li>
+                        <li class="list-group-item">
+                            מספר האיטרציות שנדרש כדי להגיע להתכנסות (קבלת ערכים יציבים) משפיע באופן ישיר על זמן החישוב.
+                        </li>
+                    </ul>
+                    
+                    <h4 class="h5">Feedback Relevance:</h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item">
+                            תהליך דירוג מחדש באמצעות Rocchio תלוי במספר המסמכים שסומנו כ"רלוונטיים" או "לא רלוונטיים".
+                        </li>
+                        <li class="list-group-item">
+                            אורך הווקטורים של TF-IDF משפיע על הזמן הנדרש לחישוב דמיון קוסינוס, ככל שיותר מילים נכללות, כך זמן החישוב גדל.
+                        </li>
+                        <li class="list-group-item">
+                            מספר האיטרציות של הדירוג מחדש יכול להוסיף לזמני הריצה אם נעשות התאמות חוזרות ונשנות.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="runtime-improvements" class="mb-5 hebrew-text">
+          <div class="card">
+              <div class="card-header bg-warning text-center text-white">
+                  <h2 class="h4 mb-0">=== הצעות לשיפור זמני הריצה ===</h2>
+              </div>
+              <div class="card-body">
+                  <ul class="list-group">
+                      <li class="list-group-item">
+                          <h5 class="mb-1">1. זחילה מקבילית ומבוזרת</h5>
+                          <p>במערכת הנוכחית הזחילה מתבצעת בצורה סדרתית, כלומר דף אחר דף, מה שמאריך את זמן הסריקה כאשר ישנם דפים רבים. אפשר לשפר זאת על ידי שימוש בזחלן מקבילי שמריץ מספר תהליכים בו-זמנית או זחלן אסינכרוני. השיטה הזו תאפשר הורדה ועיבוד של דפים במקביל ותקטין משמעותית את הזמן הכולל של תהליך הזחילה.</p>
+                      </li>
+                      <li class="list-group-item">
+                          <h5 class="mb-1">2. סינון קישורים מראש</h5>
+                          <p>בזמן הזחילה, ניתן להימנע מזחילה לדפים שאינם רלוונטיים כמו עמודי "יצירת קשר" או "תנאי שימוש". באמצעות שימוש בחוקים וסינון מראש על בסיס כתובת האתר או מבנה הדף, ניתן להתמקד רק בתוכן החשוב. כך תחסוך המערכת זמן ותמנע עיבוד מיותר של דפים לא נחוצים.</p>
+                      </li>
+                      <li class="list-group-item">
+                          <h5 class="mb-1">3. מניעת כפילויות</h5>
+                          <p>במהלך זחילה, ישנם מקרים שבהם אותו עמוד נסרק מספר פעמים תחת כתובות שונות. שימוש בטכניקות שונות כדי לזהות כפילויות ולמנוע עיבוד חוזר. פתרון זה גם יחסוך בזמן וגם במשאבים.</p>
+                      </li>
+                      <li class="list-group-item">
+                          <h5 class="mb-1">4. שימוש במודלים סמנטיים</h5>
+                          <p>מודלים כמו Word2Vec יכולים לשפר את הבנת המילים בשאילתה ולהתאים אותן טוב יותר לתוכן הדפים. לדוגמה, אם המשתמש מחפש ״חולים״, המודל ימצא גם דפים עם המילה "מטופלים". זה יעזור להחזיר תוצאות מדויקות יותר ויקטין את הצורך בחישובים נוספים.</p>
+                      </li>
+                      <li class="list-group-item">
+                          <h5 class="mb-1">5. הרחבת שאילתות</h5>
+                          <p>לפעמים, שאילתות קצרות אינן מכסות את כל ההקשרים האפשריים. על ידי הוספת מילים נרדפות או ביטויים קשורים לשאילתה, ניתן לשפר את תוצאות החיפוש ולהקטין את הצורך לחזור על השאילתה בשינויים.</p>
+                      </li>
+                  </ul>
+                  <p class="mt-4">באמצעות שיפורים אלו ניתן להאיץ את זמן הזחילה, להפחית את העומס, ולהביא לתוצאות מדויקות ויעילות יותר בזמן קצר יותר.</p>
+              </div>
+          </div>
+      </section>
+
+        <!-- Section : InvertedIndex -->
+        <section id="hubs-authorities" class="mb-5">
+            <div class="card">
+                <div class="card-header bg-warning text-center text-white">
+                    <h2 class="h4 mb-0">=== Inverted Index ===</h2>
+                </div>
+                
+                <div class="card-body">
+                    <div class="steps-container">
+                        <div class="step-content">
+                            <div class="hebrew-text">
+                                <h3 class="d-inline">איסוף המילים מהדפים שנבחרו</h3>
+                            </div>
+                            <img src="./images/invertedindexsteps.png" class="img-fluid rounded">
+                        </div>
+                        
+                    
+                    <div class="visualization-container">
+                        <h3 class="hebrew-text mb-4">תוצאות הניתוח</h3>
+                        <img src="./images/invertedindexresults2.png" alt="Inverted Index Results" class="img-fluid rounded">
+                    </div>
+                </div>
+
+                
+
+                
+            </div>
+        </section>
+
+      
+          <!-- Section C: Hubs and Authorities -->
+          <section id="hubs-authorities" class="mb-5">
+            <div class="card">
+                <div class="card-header bg-warning text-center text-white">
+                    <h2 class="h4 mb-0">=== HITS Algorithm Analysis ===</h2>
+                </div>
+
+                <div class="card-body hebrew-text">
+                  <p>
+                      <strong>Hubs:</strong> הוא דף שמכיל הרבה קישורים איכותיים לדפים אחרים בנושא. את ה-Hubs ניתן לזהות ע״י:
+                  </p>
+                  <ul>
+                      <li>בדיקת המידע שנאסף ע״י פונקציית <code>get_links()</code> עבור כל URL.</li>
+                      <li>הדפים עם מספר הקישורים היוצאים הגבוהה ביותר הם פוטנציאליים להיות Hubs.</li>
+                  </ul>
+                  <p>
+                      <strong>Authorities:</strong> הוא דף שמקבל הרבה קישורים מדפים אחרים איכותיים, כלומר הוא דף שאליו מפנים הרבה Hubs אחרים.
+                  </p>
+                  <p>
+                      בקוד ניתחנו את מבנה הקישורים של הדפים שנאספו באמצעות אלגוריתם HITS. האלגוריתם מזהה דפים שהם Hubs שמפנים להרבה Authorities ו־Authorities שאליהם מפנים הרבה Hubs.
+                  </p>
+                  <p><strong>שלבי התהליך:</strong></p>
+                  <ol>
+                      <li>
+                          <strong>בניית מבנה הקישורים:</strong>
+                          <ul>
+                              <li>הקוד בונה גרף קישורים מהדפים שנסרקו:</li>
+                              <li><code>outgoing_links</code>: עבור כל דף, נשמרים הדפים שהוא מפנה אליהם.</li>
+                              <li><code>incoming_links</code>: עבור כל דף, נשמרים הדפים שמפנים אליו.</li>
+                              <li>הפונקציות <code>fetch_page</code> ו־<code>get_links</code> משמשות לשליפת דפי HTML וקישורים מהם.</li>
+                          </ul>
+                      </li>
+                      <li>
+                          <strong>אתחול ציון Hubs ו־Authorities:</strong>
+                          <ul>
+                              <li>לכל דף מוקצה ציון ראשוני של 1.0 עבור Hub ו־Authority.</li>
+                          </ul>
+                      </li>
+                      <li>
+                          <strong>חישוב ציונים באמצעות איטרציות:</strong> בכל איטרציה מבוצעים השלבים הבאים:
+                          <ul>
+                              <li>
+                                  <strong>עדכון ציון Authority:</strong><br>
+                                  הציון של דף נקבע כסכום ציוני ה-Hubs של הדפים שמפנים אליו.<br>
+                                  <code>auth_scores[page] = sum(hub_scores[incoming] for incoming in incoming_links[page])</code>
+                              </li>
+                              <li>
+                                  <strong>נרמול ציון Authority:</strong><br>
+                                  כל הציונים מנורמלים ע״י חישוב הנורמה של כל הציונים, וחלוקת כל ציון בנורמה.
+                              </li>
+                              <li>
+                                  <strong>עדכון ציון Hub:</strong><br>
+                                  הציון של דף נקבע כסכום ציוני ה־Authorities של הדפים שהוא מפנה אליהם.<br>
+                                  <code>hub_scores[page] = sum(auth_scores[outgoing] for outgoing in outgoing_links[page])</code>
+                              </li>
+                              <li>
+                                  <strong>נרמול ציון Hub:</strong><br>
+                                  כל הציונים מנורמלים ע״י חישוב הנורמה של כל הציונים, וחלוקת כל ציון בנורמה.
+                              </li>
+                          </ul>
+                      </li>
+                      <li>
+                          <strong>בדיקת התכנסות:</strong><br>
+                          אם ההפרשים בין הציונים החדשים לציונים הישנים בין שתי איטרציות רצופות עבור כל הדפים קטנים מסף ϵ, האלגוריתם מפסיק את האיטרציות.
+                      </li>
+                      <li>
+                          <strong>תוצאה סופית:</strong>
+                          <ul>
+                              <li>האלגוריתם מדפיס את חמשת הדפים המובילים כ־Hubs וכ־Authorities, על פי הציונים הסופיים.</li>
+                              <li>הדפים המובילים כוללים מידע כמו מזהה הדף (URL ID), כתובת URL מלאה, ציון Hub או Authority, ומספר הקישורים היוצאים או הנכנסים.</li>
+                              <li>דף נחשב ל-Hub טוב אם הוא מקשר לדפים שהם Authorities טובים.</li>
+                              <li>דף נחשב ל-Authority טוב אם הוא מקושר על ידי Hubs טובים.</li>
+                          </ul>
+                      </li>
+                  </ol>
+                </div>
+
+                <div class="card-body">
+                    <!-- Top Hubs Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="h5 mb-0">Top Hubs and Authorities</h4>
+
+                        </div>                      
+        
+        
+<div>
+			<img src="./images/top_hubs_ato.png" alt="Inverted Index Results" class="img-fluid rounded">
+
+</div> 
+          <!-- Section D: PageRank Analysis -->
+
+          <section id="pagerank" class="mb-5">
+              <div class="card">
+                  <div class="card-header bg-warning text-center text-white">
+                      <h2 class="h4 mb-0">=== PageRank Analysis ===</h2>
+                  </div>
+
+                  <div class="card-body hebrew-text">
+                    <p><strong>השלבים לחישוב ה-PageRank לכל דף:</strong></p>
+                    <ol>
+                        <li>
+                            <strong>בנייה ראשונית של מבנה הקישורים:</strong>
+                            <ul>
+                                <li>
+                                    הפונקציה <code>select_connected_pages</code> יוצרת גרף קישורים על בסיס הקישורים שנמצאים בתוך הדפים:
+                                </li>
+                                <li><code>page_links</code> - עבור כל דף, נרשמים הדפים שאליהם הוא מפנה.</li>
+                                <li>
+                                    כל דף חייב לכלול קישורים יוצאים לפחות לדף אחד כדי להיכלל במבנה.
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>בחירת 10 דפים עם קשרים ביניהם:</strong>
+                            <ul>
+                                <li>
+                                    הפונקציה מתחילה לסדר את הדפים לפי מספר הקישורים היוצאים בסדר יורד.
+                                </li>
+                                <li>
+                                    הדפים הראשונים שנבחרים הם אלו שיש להם יותר קשרים.
+                                </li>
+                                <li>
+                                    במהלך הבחירה, הפונקציה מבטיחה שכל דף שנבחר הוא חלק מקבוצת דפים מחוברת (connected component).
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>חישוב ה-PageRank עבור כל דף:</strong>
+                            <ul>
+                                <li>
+                                    <strong>אתחול ציוני PageRank:</strong> לכל דף מתוך ה-10 הנבחרים מוקצה ציון התחלתי שווה:<br>
+                                    <code>Initial_PageRank = 1 / N</code><br>
+                                    כאשר <code>N</code> הוא מספר הדפים שנבחרו (במקרה זה 10).
+                                </li>
+                                <li>
+                                    <strong>לולאת עדכון PageRank:</strong>
+                                    <ul>
+                                        <li>
+                                            הציונים מתעדכנים לאורך מספר איטרציות שנקבע על ידי <code>num_iterations</code> או עד להתכנסות.
+                                        </li>
+                                        <li>
+                                            בכל איטרציה מבוצע עדכון לכל דף באופן הבא:
+                                            <ul>
+                                                <li>
+                                                    <strong>קלטים נכנסים:</strong> נחשב הסכום של התרומות מ-PageRank של הדפים שמפנים לדף הנוכחי.
+                                                </li>
+                                                <li>
+                                                    <strong>תרומת "קפיצה אקראית":</strong> <code>(1-d) / N</code> - משקל שמחולק שווה בין כל הדפים.
+                                                </li>
+                                                <li>
+                                                    <strong>תרומת קישורים נכנסים:</strong> עבור כל דף שמפנה לדף הנוכחי, התרומה היא:
+                                                    <div class="text-center my-3">
+                                                      <img src="./images/formula2.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">
+                                                  </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>הנוסחה המלאה:</strong>
+                                            <div class="text-center my-3">
+                                                <img src="./images/formula1.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">
+                                            </div>
+                                            <span>נוסחה זו מבטיחה שדירוג הדף של דף מושפע מדירוג העמודים של הדפים המקשרים אליו, בשקלול מספר הקישורים היוצאים מאותם דפים.</span>
+                                            
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>בדיקת התכנסות:</strong>
+                            <ul>
+                                <li>
+                                    לאחר כל איטרציה, הקוד מחשב את ההפרש המרבי בין הציונים החדשים לציונים הישנים.
+                                </li>
+                                <li>
+                                    אם ההפרש קטן מ-<code>ϵ</code>, הלולאה נעצרת.
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>פלט הציונים:</strong>
+                            <ul>
+                                <li>
+                                    בסוף התהליך, לכל דף מחושב ומודפס ציון ה-PageRank שמייצג את חשיבותו במבנה הקישורים.
+                                </li>
+                                <li>
+                                    בסוף התהליך מחושב הדף עם ה-PageRank הגדול ביותר.
+                                </li>
+                                <li>
+                                    דירוג זה מייצג את חשיבות הדף במונחי מבנה הקישורים.
+                                </li>
+                                <li>
+                                    אם דף מקבל קישורים מהרבה דפים חשובים (כלומר, דפים בעלי PageRank גבוה), הוא יקבל ציון גבוה.
+                                </li>
+                                <li>
+                                    אם דף מקבל קישור מדף שיש לו הרבה קישורים יוצאים, התרומה לציון שלו תהיה קטנה יותר כי היא מתחלקת בין כל הקישורים היוצאים.
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                  <div class="card-body">
+                      <h3 class="h5">=== PageRank Calculation Process ===</h3>
+                      <div class="alert alert-secondary">
+                          <p>Using damping factor (d) = 0.85</p>
+                          <p>Convergence threshold (ε) = 1e-6</p>
+                      </div>
+
+                    <h4 class="h5 mt-4">Selected Connected Pages</h4>
+                   
+                    <div class="linked-list-container">
+
+                        
+                        <div class="linked-list-item">
+                            <span class="link-count">9</span>
+                            <h5 class="mb-3">
+                               <a href="https://www.bundesgesundheitsministerium.de/en/" class="badge bg-primary me-2" >Page ID: 1</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=22" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 22)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/themen/praevention/antibiotika-resistenzen/dart-2030.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>DART 2030
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=2" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 2)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/coronavirus/faq-covid-19-vaccination.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>COVID-19 Vaccination FAQ
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="linked-list-item">
+                            <span class="link-count">6</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=22&cHash=09012e25e8ea0ff0f3bfb90ec06d66db" class="badge bg-primary me-2">Page ID: 2</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=22&cHash=09012e25e8ea0ff0f3bfb90ec06d66db" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 22)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+                        
+
+                        <div class="linked-list-item">
+                            <span class="link-count">5</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="badge bg-primary me-2">Page ID: 3</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <div class="linked-list-item">
+                            <span class="link-count">5</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="badge bg-primary me-2">Page ID: 4</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+                        
+                        <div class="linked-list-item">
+                            <span class="link-count">6</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/themen/praevention/antibiotika-resistenzen/dart-2030.html" class="badge bg-primary me-2">Page ID: 5</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/themen/praevention/antibiotika-resistenzen/dart-2030.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>DART 2030
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="linked-list-item">
+                            <span class="link-count">5</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="badge bg-primary me-2">Page ID: 6</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="linked-list-item">
+                            <span class="link-count">7</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=2&cHash=d155192cee85e48a8f9bbffeca9afce9" class="badge bg-primary me-2">Page ID: 7</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=22&cHash=09012e25e8ea0ff0f3bfb90ec06d66db" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 22)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=2&cHash=d155192cee85e48a8f9bbffeca9afce9" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 2)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="linked-list-item">
+                            <span class="link-count">5</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="badge bg-primary me-2">Page ID: 8</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="linked-list-item">
+                            <span class="link-count">6</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/coronavirus/faq-covid-19-vaccination.html" class="badge bg-primary me-2">Page ID: 10</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/coronavirus/faq-covid-19-vaccination.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>COVID-19 Vaccination FAQ
+                                </a>
+                            </div>
+                        </div>
+
+                        
+                        <div class="linked-list-item">
+                            <span class="link-count">9</span>
+                            <h5 class="mb-3">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/#c28309" class="badge bg-primary me-2">Page ID: 19</a>
+                            </h5>
+                            <h6 class="mt-4 mb-3">Outgoing Links:</h6>
+                            <div class="outgoing-links">
+                                <a href="https://www.bundesgesundheitsministerium.de/en/" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Homepage
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=22&cHash=09012e25e8ea0ff0f3bfb90ec06d66db" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 22)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/international/bilateral-health-policy.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Bilateral Health Policy
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/pst-edgar-franke.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Edgar Franke
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/themen/praevention/antibiotika-resistenzen/dart-2030.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>DART 2030
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/st-dr-tomas-steffen.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Leadership - Dr. Tomas Steffen
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/index.html?tx_bmgsitepackage_bmg_article_list%5Baction%5D=list&tx_bmgsitepackage_bmg_article_list%5Bcontroller%5D=Article&tx_bmgsitepackage_bmg_article_list%5Bpage%5D=2&cHash=d155192cee85e48a8f9bbffeca9afce9" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Article List (Page 2)
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/ministry/leadership/minister-of-health.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>Minister of Health
+                                </a>
+                                <a href="https://www.bundesgesundheitsministerium.de/en/coronavirus/faq-covid-19-vaccination.html" class="url-link" target="_blank">
+                                    <i class="fas fa-link me-2"></i>COVID-19 Vaccination FAQ
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+
+                    <h4 class="mt-4 mb-4 fw-bold text-body-emphasis">Initial PageRank Values - PageRank values after iteration 0:</h4>
+                    <div class="table-responsive">
+                    <img src="./images/itr0.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">		
+
+                    </div>
+
+
+<div>
+                    <h4 class="mt-4 mb-4 fw-bold text-body-emphasis">PageRank values after iteration 1:</h4>
+                                        <img src="./images/itr1.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">		
+
+					</div>
+
+
+
+<div>
+                    <h4 class="mt-4 mb-4 fw-bold text-body-emphasis">PageRank values after iteration 2:</h4>
+                                        <img src="./images/itr2.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">		
+
+					</div>
+
+
+
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">
+                            <i class="fas fa-crown text-warning me-2"></i>
+                            Top PageRank Result
+                        </h3>
+                        <span class="badge bg-success">Iteration 2</span>
+                    </div>
+                    <div>
+		<img src="./images/itr3.png" alt="PageRank Formula" style="max-width: 100%; height: auto;">		
+
+                    </div>
+        
+                    
+                    </div>
+                    
+
+                </div>
+            </div>
+        </section>
+
+          <!-- Section : User Feedback -->
+          <section id="user-feedback" class="mb-5">
+              <div class="card">
+                  <div class="card-header bg-warning text-center text-white">
+                      <h2 class="h4 mb-0">=== Relevance Feedback Analysis ===</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-body hebrew-text">
+                        <h3 class="section-title mb-4">מימוש אלגוריתם Rocchio</h3>
+                        
+                        <p class="lead">
+                            המימוש שלנו משתמש בעקרונות של <strong>אלגוריתם Rocchio</strong> לשיפור וקטור השאילתה ולדירוג מחדש של דפים על בסיס פידבק המשתמש. השימוש מתמקד בעדכון וקטור השאילתה ובחישוב דמיון קוסינוס מול דפי המערכת.
+                        </p>
+        
+                        <div class="alert alert-info my-4">
+                            <i class="fas fa-info-circle bullet-point"></i>
+                            כל משתמש מבין שני מהמשתמשים מסמן דפים כרלוונטיים או לא רלוונטיים לאחר איסוף הפידבק, המשתמש יכול ללחוץ על כפתור "Show Ranking" לדירוג מחדש של הדפים.
+                        </div>
+        
+                        <h4 class="mb-4">תהליך הדירוג מחדש מתבצע באופן הבא:</h4>
+        
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="step-number">1</span>
+                                <h5 class="mb-0">יצירת וקטורי TF-IDF:</h5>
+                            </div>
+                            <ul class="list-unstyled pr-5">
+                                <li><i class="fas fa-circle bullet-point"></i> נבנים וקטורי TF-IDF לכל הדפים באמצעות האינדקס ההפוך.</li>
+                                <li><i class="fas fa-circle bullet-point"></i> מחושבים TF ו-IDF עבור מילים בכל דף.</li>
+                            </ul>
+                        </div>
+        
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="step-number">2</span>
+                                <h5 class="mb-0">אתחול וקטור השאילתה:</h5>
+                            </div>
+                            <ul class="list-unstyled pr-5">
+                                <li><i class="fas fa-circle bullet-point"></i> וקטור השאילתה הראשוני query_vector הוא ממוצע של כל וקטורי TF-IDF של המסמכים.</li>
+                            </ul>
+                        </div>
+        
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="step-number">3</span>
+                                <h5 class="mb-0">עדכון וקטור השאילתה לפי הפידבק:</h5>
+                            </div>
+                            <ul class="list-unstyled pr-5">
+                                <li><i class="fas fa-circle bullet-point"></i> דפים רלוונטיים: וקטור השאילתה מתעדכן על ידי הוספת ממוצע וקטורי TF-IDF</li>
+                                <li><i class="fas fa-circle bullet-point"></i> דפים לא רלוונטיים: וקטור השאילתה מתעדכן על ידי חיסור ממוצע וקטורי TF-IDF</li>
+                            </ul>
+                        </div>
+        
+                        <h6 class="mb-2"><strong>הנוסחה מתאימה לעקרונות של Rocchio:</strong></h6>
+                        <div class="formula-container text-center">
+                        
+                            <img src="./images/formula3.png" alt="Rocchio Formula" class="img-fluid" style="max-width: 100%;">
+                        </div>
+        
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="step-number">4</span>
+                                <h5 class="mb-0">חישוב דמיון קוסינוס:</h5>
+                            </div>
+                            <ul class="list-unstyled pr-5">
+                                <li><i class="fas fa-circle bullet-point"></i> מחשבים את הדמיון הקוסינוס בין וקטור השאילתה המעודכן לוקטורי TF-IDF של כל הדפים.</li>
+                                <li><i class="fas fa-circle bullet-point"></i> הדפים מדורגים לפי ציוני הדמיון שהתקבלו.</li>
+                                <li><i class="fas fa-circle bullet-point"></i> הדירוגים המעודכנים מוצגים למשתמש.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+
+
+                      <div class="row">
+                              <div class="card mb-3">
+                                  <div class="card-header">
+                                      <h4 class="h5 mb-0">User 1 Feedback</h4>
+                                  </div>
+                                  <div class="card-body">
+                                      <h5 class="mb-0" class=".hebrew-text">בחירות רלוונטיות/לא רלוונטיות של משתמש 1</h5>
+                                      <img src="./images/user3_1.png" style="max-width: 100%; height: auto;"/>
+                                      <img src="./images/user3_2.png" style="max-width: 100%; height: auto;"/>
+                                      <img src="./images/user3_3.png" style="max-width: 100%; height: auto;"/>
+									  
+                                      <h5 class="mb-0" class=".hebrew-text">עדכון הניקוד וסדר הדפים</h5>
+                                      <img src="./images/user4_1.png" style="max-width: 100%; height: auto;"/>
+                                      <img src="./images/user4_1.png" style="max-width: 100%; height: auto;"/>
+
+                                      <div class="mt-5 info">
+                                        <strong>Precision And Recall Calculation:</strong><br>
+                                        <img src="./images/user1_percision_recall.png" style="max-width: 100%; height: auto;">
+                                    </div>
+                                  </div>
+                              </div>
+                          
+                                       <div class="mt-5 info">
+                                        <strong>שאילתא מוצעת למשתמש 1:</strong><br>
+								<img src="./images/suggestedQuery3.png">
+                                    </div>
+
+                              <div class="card mb-3">
+                                <div class="card-header">
+                                    <h4 class="h5 mb-0">User 2 Feedback</h4>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="mb-0" class=".hebrew-text">בחירות רלוונטיות/לא רלוונטיות של משתמש 2</h5>
+                                    <img src="./images/user5_1.png" style="max-width: 100%; height: auto;"/>
+                                    <img src="./images/user5_2.png" style="max-width: 100%; height: auto;"/>
+                                    <img src="./images/user5_3.png" style="max-width: 100%; height: auto;"/>
+
+                                    <h5 class="mb-0" class=".hebrew-text">עדכון הניקוד וסדר הדפים</h5>
+                                    <img src="./images/user6_1.png" style="max-width: 100%; height: auto;"/>
+                                    <img src="./images/user6_2.png" style="max-width: 100%; height: auto;"/>
+
+                                    <div class="mt-5 info">
+                                        <strong>Precision And Recall Calculation:</strong><br>
+                                        <img src="./images/user2_percision_recall.png" style="max-width: 100%; height: auto;">
+                                    </div>
+                                </div>
+                            </div>
+                         
+                      </div>
+                  </div>
+
+                  <div class="card process-card p-4">
+                    <div class="card-body hebrew-text">
+                        <h2 class="text-center mb-5">הרחבת שאילתה</h2>
+                        
+                        <div class="alert alert-primary mb-4">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            המשתמש יכול ללחוץ על כפתור "Show Query Suggestion" לצורך הצעת מונחי שאילתה נוספים.
+                        </div>
+        
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="step-icon me-3">
+                                                <i class="fas fa-search">1</i>
+                                            </div>
+                                            <h4 class="mb-0">איסוף מונחים</h4>
+                                        </div>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">*<i class="fas fa-check text-success me-2"></i>נאספים מונחים מתוך דפים רלוונטיים</li>
+                                            <li>*<i class="fas fa-minus text-danger me-2"></i>מונחים מדפים לא רלוונטיים מופחתים</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="step-icon me-3">
+                                                <i class="fas fa-sort-amount-down">2</i>
+                                            </div>
+                                            <h4 class="mb-0">מיון מונחים</h4>
+                                        </div>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">*<i class="fas fa-chart-line text-primary me-2"></i>מיון לפי משקל עדכני</li>
+                                            <li>*<i class="fas fa-trophy text-warning me-2"></i>בחירת 5 המונחים המובילים</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="step-icon me-3">
+                                                <i class="fas fa-magic">3</i>
+                                            </div>
+                                            <h4 class="mb-0">יצירת שאילתה</h4>
+                                        </div>
+                                        <p>* שילוב המונחים הנבחרים לשאילתה חדשה והצגתה למשתמש</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <h3 class="mb-4">יתרונות של Feedback Relevance</h3>
+                        <div class="benefit-item">
+                            <h5><i class="fas fa-star text-warning me-2"></i>שיפור דירוגים</h5>
+                            <p class="mb-0">הדירוגים מתעדכנים בהתאם לפידבק, כך שדפים רלוונטיים זוכים לעדיפות גבוהה יותר</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h5><i class="fas fa-bullseye text-danger me-2"></i>שיפור שאילתות</h5>
+                            <p class="mb-0">הצעת מונחים נוספים יכולה לשפר את איכות התוצאות</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h5><i class="fas fa-user-gear text-success me-2"></i>התאמה אישית</h5>
+                            <p class="mb-0">מאפשר התאמה דינאמית של תוצאות החיפוש לצרכי המשתמש</p>
+                        </div>
+        
+                        <div class="alert alert-success mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            שימוש במונחי השאילתה המוצעים יאפשרו לצמצם חיפושים עתידיים ולשפר את התוצאות על סמך משוב המשתמשים.
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Suggested Query Expansion:</strong><br>
+                        healthcare + policy + chronic + treatment
+                    </div>
+                    <img src="./images/suggestedQuery2.png">
+
+
+                </div>
+
+
+
+              </div>
+          </section>
+      </div>
+  </div>
+</div>
+
+<footer class="bg-light py-3">
+  <div class="container text-center">
+      <p class="mb-0">Search Engine Analysis Report - Rank Rangers</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+
+  
+
+</body>
+</html>
